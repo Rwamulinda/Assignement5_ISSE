@@ -47,6 +47,7 @@ CList CL_new() {
 }
 
 // Documented in .h file
+// Documented in .h file
 void CL_free(CList list) {
     assert(list);
 
@@ -55,15 +56,13 @@ void CL_free(CList list) {
 
     while (current != NULL) {
         next_node = current->next;
-
-        // Only free element if it's a pointer and dynamically allocated
-        free(current->element);  // Adjust this based on your element type management
-
-        free(current);           // Free the node itself
+        // Remove the following line to prevent trying to free const elements
+        // free(current->element); // Do NOT free const elements
+        free(current);
         current = next_node;
     }
 
-    free(list); // Free the list structure
+    free(list);
 }
 
 // Documented in .h file

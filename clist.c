@@ -55,11 +55,15 @@ void CL_free(CList list) {
 
     while (current != NULL) {
         next_node = current->next;
-        free(current);
+
+        // Only free element if it's a pointer and dynamically allocated
+        free(current->element);  // Adjust this based on your element type management
+
+        free(current);           // Free the node itself
         current = next_node;
     }
 
-    free(list);
+    free(list); // Free the list structure
 }
 
 // Documented in .h file

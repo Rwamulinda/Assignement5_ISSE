@@ -62,7 +62,6 @@ void CL_free(CList list) {
     free(list);
 }
 
-
 // Documented in .h file
 int CL_length(CList list) {
     assert(list);
@@ -128,16 +127,35 @@ void CL_append(CList list, CListElementType element) {
 }
 
 // Documented in .h file
+// Function to get the nth element of a circular linked list
 CListElementType CL_nth(CList list, int pos) {
-    assert(list);
-     if (pos < 0 || pos >= list->length) {
-        return INVALID_RETURN;  // Ensure it returns if out of bounds
+    assert(list);  // Ensure the list is not NULL
+
+    // Check if the list is empty
+    if (list->head == NULL) {
+        return NULL;  // List is empty
     }
-    struct _cl_node *node = list->head;
+
+    // Adjust negative position for circular indexing
+    if (pos < 0) {
+        pos = list->length + pos; // Convert negative index to positive
+    }
+
+    // Check for out of bounds position
+    if (pos < 0 || pos >= list->length) {
+        return NULL;  // Out of bounds
+    }
+
+    // Declare the current pointer to traverse the list
+    struct _cl_node* current = list->head; // Corrected pointer declaration
+
+    // Traverse the list to the specified position
     for (int i = 0; i < pos; i++) {
-        node = node->next;  // Traverse the list
+        current = current->next; // Move to the next node
     }
-    return node->element;  // Return the element at pos
+
+    // Return the data at the current node
+    return current->element;  // Return the element at the current node
 }
 
 // Documented in .h file
@@ -261,7 +279,7 @@ void CL_foreach(CList list, CL_foreach_callback callback, void *cb_data) {
 
     struct _cl_node *node = list->head;
     for (int pos = 0; node != NULL; pos++) {
-        callback(pos, node->element, cb_data);  // Call the callback function
-        node = node->next;  // Move to the next node
+        callback(pos, node->element, cb_data); // Call the callback with the current node
+        node = node->next; // Move to the next node
     }
 }

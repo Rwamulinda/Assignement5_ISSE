@@ -167,7 +167,6 @@ int test_cl_nth()
 }
 
 
-
   //
   // TODO: Add your code here
   //

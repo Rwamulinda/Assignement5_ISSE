@@ -62,6 +62,7 @@ void CL_free(CList list) {
     free(list);
 }
 
+
 // Documented in .h file
 int CL_length(CList list) {
     assert(list);

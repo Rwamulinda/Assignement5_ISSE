@@ -129,13 +129,14 @@ void CL_append(CList list, CListElementType element) {
 // Documented in .h file
 CListElementType CL_nth(CList list, int pos) {
     assert(list);
-    if (pos < 0 || pos >= list->length) return INVALID_RETURN; // Invalid position
-
-    struct _cl_node *current = list->head;
-    for (int i = 0; i < pos; i++) {
-        current = current->next; // Traverse to the position
+     if (pos < 0 || pos >= list->length) {
+        return INVALID_RETURN;  // Ensure it returns if out of bounds
     }
-    return current->element;
+    struct _cl_node *node = list->head;
+    for (int i = 0; i < pos; i++) {
+        node = node->next;  // Traverse the list
+    }
+    return node->element;  // Return the element at pos
 }
 
 // Documented in .h file
@@ -257,12 +258,9 @@ void CL_foreach(CList list, CL_foreach_callback callback, void *cb_data) {
     assert(list);
     assert(callback);
 
-    struct _cl_node *current = list->head;
-    int pos = 0;
-
-    while (current != NULL) {
-        callback(pos, current->element, cb_data); // Call the user-specified function
-        current = current->next; // Move to the next node
-        pos++;
+    struct _cl_node *node = list->head;
+    for (int pos = 0; node != NULL; pos++) {
+        callback(pos, node->element, cb_data);  // Call the callback function
+        node = node->next;  // Move to the next node
     }
 }

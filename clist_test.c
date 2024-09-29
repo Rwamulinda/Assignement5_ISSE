@@ -165,8 +165,77 @@ int test_cl_nth()
   CL_free(list);
   return ret;
 }
+int test_cl_append()
+{
+  int ret = 0;
+  CList list = CL_new();
+  
+  // Append all the items
+  for (int i=0; i < num_testdata; i++) {
+    CL_append(list, testdata[i]);
+    test_assert( CL_length(list) == i+1 );
+  }
+
+  // ensure that the list is in the right order
+  for (int i=0; i < num_testdata; i++)
+    test_compare( CL_nth(list, i), testdata[i] );
+
+  ret = 1;
+
+ test_error:
+  CL_free(list);
+  return ret;
+}
 
 
+/*
+ * Tests the CL_nth function
+ *
+ * Returns: 1 if all tests pass, 0 otherwise
+ */
+int test_cl_nth()
+{
+  int ret = 0;
+  CList list = CL_new();
+  
+  // Empty list -- ensure that CL_nth returns NULL for -2, -1, 0, 1, and 2
+  test_invalid( CL_nth(list, -2) );
+  test_invalid( CL_nth(list, -1) );
+  test_invalid( CL_nth(list, 0) );
+  test_invalid( CL_nth(list, 1) );
+  test_invalid( CL_nth(list, 2) );
+
+  // Add one item, then perform same tests
+  CL_push(list, testdata[2]);
+  test_assert( CL_length(list) == 1 );
+  test_invalid( CL_nth(list, -3) );
+  test_invalid( CL_nth(list, -2) );
+  test_compare( CL_nth(list, -1), testdata[2]);
+  test_compare( CL_nth(list, 0), testdata[2]);
+  test_invalid( CL_nth(list, 1) );
+  test_invalid( CL_nth(list, 2) );
+
+  // Push two more items, perform similar tests 
+  CL_push(list, testdata[1]);
+  CL_push(list, testdata[0]);
+  test_assert( CL_length(list) == 3 );
+  test_invalid( CL_nth(list, -5) );
+  test_invalid( CL_nth(list, -4) );
+  test_compare( CL_nth(list, -3), testdata[0]);
+  test_compare( CL_nth(list, -2), testdata[1]);
+  test_compare( CL_nth(list, -1), testdata[2]);
+  test_compare( CL_nth(list, 0), testdata[0]);
+  test_compare( CL_nth(list, 1), testdata[1]);
+  test_compare( CL_nth(list, 2), testdata[2]);
+  test_invalid( CL_nth(list, 3) );
+  test_invalid( CL_nth(list, 4) );
+
+  ret = 1;
+
+ test_error:
+  CL_free(list);
+  return ret;
+}
 
   //
   // TODO: Add your code here
@@ -263,7 +332,7 @@ int main()
   num_tests++; passed += test_cl_append();
   num_tests++; passed += test_cl_nth();
 
-
+  
   //
   // TODO: Add your code here
   //

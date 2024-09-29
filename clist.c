@@ -50,20 +50,21 @@ CList CL_new() {
 // Documented in .h file
 void CL_free(CList list) {
     assert(list);
-
+    
     struct _cl_node *current = list->head;
     struct _cl_node *next_node;
 
+    // Free all nodes
     while (current != NULL) {
-        next_node = current->next;
-        // Remove the following line to prevent trying to free const elements
-        free(current->element); // Do NOT free const elements
+        next_node = current->next; // Store next node
+        // Do not free current->element if it is not dynamically allocated
         free(current);
-        current = next_node;
+        current = next_node; // Move to the next node
     }
 
-    free(list);
+    free(list); // Free the list structure
 }
+
 
 // Documented in .h file
 int CL_length(CList list) {

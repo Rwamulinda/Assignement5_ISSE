@@ -57,7 +57,7 @@ void CL_free(CList list) {
     while (current != NULL) {
         next_node = current->next;
         // Remove the following line to prevent trying to free const elements
-        // free(current->element); // Do NOT free const elements
+        free(current->element); // Do NOT free const elements
         free(current);
         current = next_node;
     }

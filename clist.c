@@ -243,33 +243,39 @@ CListElementType CL_remove(CList list, int pos)
 {
   assert(list);
 
+  // If the list is empty or pos is out of bounds, return INVALID_RETURN
+    if (list->head == NULL || pos < 0 || pos >= CL_length(list)) {
+        return INVALID_RETURN;
+    }
+
+    struct _cl_node *node_to_remove = list->head;
+    struct _cl_node *previous = NULL;
+    CListElementType element;
+
+    // Special case: removing the head
+    if (pos == 0) {
+        element = node_to_remove->element;
+        list->head = node_to_remove->next;
+        free(node_to_remove);
+    } else {
+        // Traverse to the node at position `pos`
+        for (int i = 0; i < pos; i++) {
+            previous = node_to_remove;
+            node_to_remove = node_to_remove->next;
+        }
+
+        // Remove the node by adjusting the previous node's next pointer
+        element = node_to_remove->element;
+        previous->next = node_to_remove->next;
+
+        free(node_to_remove);
+    }
+
+    // Return the element that was removed
+    return element;
   //
   // TODO: Add your code here
-  if (pos < 0 || pos >= list->length) {
-    return INVALID_RETURN;
-  }
-
-  struct _cl_node *current = list->head;
-  if (pos == 0) {
-    list->head = current->next;
-    CListElementType element = current->element;
-    free(current);
-    list->length--;
-    return element;
-  }
-
-  for (int i = 0; i < pos - 1; i++) {
-    current = current->next;
-  }
-
-  struct _cl_node *node_to_remove = current->next;
-  current->next = node_to_remove->next;
-  CListElementType element = node_to_remove->element;
-  free(node_to_remove);
-
-  list->length--;
-  //
-  return INVALID_RETURN;
+  
 }
 
 

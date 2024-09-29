@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <string.h>
-
 #include "clist.h"
 
 #define DEBUG
@@ -17,6 +16,7 @@ struct _clist {
     int length;
 };
 
+// Function to create a new node
 static struct _cl_node* _CL_new_node(CListElementType element, struct _cl_node *next) {
     struct _cl_node* new = (struct _cl_node*) malloc(sizeof(struct _cl_node));
     assert(new);
@@ -25,6 +25,7 @@ static struct _cl_node* _CL_new_node(CListElementType element, struct _cl_node *
     return new;
 }
 
+// Create a new circular linked list
 CList CL_new() {
     CList list = (CList) malloc(sizeof(struct _clist));
     assert(list);
@@ -33,6 +34,7 @@ CList CL_new() {
     return list;
 }
 
+// Free the entire list
 void CL_free(CList list) {
     assert(list);
     struct _cl_node *current = list->head;
@@ -46,30 +48,41 @@ void CL_free(CList list) {
     free(list);
 }
 
+// Return the length of the list
 int CL_length(CList list) {
     assert(list);
 #ifdef DEBUG
     int len = 0;
-    for (struct _cl_node *node = list->head; node != NULL; node = node->next)
+    struct _cl_node *node = list->head;
+    while (node != NULL) {
         len++;
+        node = node->next;
+    }
     assert(len == list->length);
+    printf("Expected length: %d, Actual length: %d\n", list->length, len);
 #endif // DEBUG
     return list->length;
 }
 
+// Print the elements in the list
 void CL_print(CList list) {
     assert(list);
     int num = 0;
-    for (struct _cl_node *node = list->head; node != NULL; node = node->next)
+    struct _cl_node *node = list->head;
+    while (node != NULL) {
         printf("  [%d]: %s\n", num++, node->element);
+        node = node->next;
+    }
 }
 
+// Push a new element onto the list
 void CL_push(CList list, CListElementType element) {
     assert(list);
     list->head = _CL_new_node(element, list->head);
     list->length++;
 }
 
+// Pop an element from the front of the list
 CListElementType CL_pop(CList list) {
     assert(list);
     struct _cl_node *popped_node = list->head;
@@ -82,6 +95,7 @@ CListElementType CL_pop(CList list) {
     return ret;
 }
 
+// Append an element to the end of the list
 void CL_append(CList list, CListElementType element) {
     assert(list);
     struct _cl_node *new_node = _CL_new_node(element, NULL);
@@ -97,6 +111,7 @@ void CL_append(CList list, CListElementType element) {
     list->length++;
 }
 
+// Get the nth element from the list
 CListElementType CL_nth(CList list, int pos) {
     assert(list);
     if (pos < 0 || pos >= list->length) {
@@ -109,6 +124,7 @@ CListElementType CL_nth(CList list, int pos) {
     return current->element;
 }
 
+// Insert an element at a specific position in the list
 bool CL_insert(CList list, CListElementType element, int pos) {
     assert(list);
     if (pos < 0 || pos > list->length) {
@@ -129,6 +145,7 @@ bool CL_insert(CList list, CListElementType element, int pos) {
     return true;
 }
 
+// Remove an element at a specific position from the list
 CListElementType CL_remove(CList list, int pos) {
     assert(list);
     if (pos < 0 || pos >= list->length) {
@@ -152,6 +169,7 @@ CListElementType CL_remove(CList list, int pos) {
     return ret;
 }
 
+// Copy an existing list
 CList CL_copy(CList src_list) {
     assert(src_list);
     CList new_list = CL_new();
@@ -163,6 +181,7 @@ CList CL_copy(CList src_list) {
     return new_list;
 }
 
+// Insert an element in sorted order
 int CL_insert_sorted(CList list, CListElementType element) {
     assert(list);
     struct _cl_node *new_node = _CL_new_node(element, NULL);
@@ -184,6 +203,7 @@ int CL_insert_sorted(CList list, CListElementType element) {
     return pos; // inserted at position
 }
 
+// Join two lists together
 void CL_join(CList list1, CList list2) {
     assert(list1);
     assert(list2);
@@ -201,6 +221,7 @@ void CL_join(CList list1, CList list2) {
     free(list2); // Free list2 after joining
 }
 
+// Reverse the list
 void CL_reverse(CList list) {
     assert(list);
     struct _cl_node *prev = NULL;
